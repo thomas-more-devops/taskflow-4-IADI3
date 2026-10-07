@@ -323,5 +323,3 @@ After successful setup:
 ---
 
 **Need immediate help?** Check the [Troubleshooting](#troubleshooting) section or contact your instructor.
-
-**Ready to contribute?** See our [Contributing Guidelines](CONTRIBUTING.md).
