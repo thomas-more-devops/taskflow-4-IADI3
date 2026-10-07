@@ -148,5 +148,3 @@ A: Only by editing the CSS file for now. Themes are on the roadmap.
 ## 🎉 Getting Started
 
 Check out the [Setup Guide](SETUP.md) for installation instructions, or just open `index.html` in your browser.
-
-For developers, see the [Architecture Documentation](ARCHITECTURE.md) and [Contributing Guidelines](CONTRIBUTING.md).
