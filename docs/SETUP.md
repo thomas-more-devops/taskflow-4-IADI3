@@ -33,7 +33,7 @@
    # Download ZIP from GitHub
    # OR clone the repository
    git clone https://github.com/thomas-more-devops/taskflow-4-IADI3.git
-   cd taskflow
+   cd taskflow-4-IADI3
    ```
 
 2. **Open in Browser**
@@ -53,7 +53,7 @@
 git clone https://github.com/thomas-more-devops/taskflow-4-IADI3.git
 
 # Navigate to project directory
-cd taskflow
+cd taskflow-4-IADI3
 
 # Verify file structure
 ls -la
@@ -70,15 +70,14 @@ xdg-open index.html
 
 ### For Students (Course Work)
 
-1. **Fork and Clone**
+1. **Clone and set upstream**
    ```bash
-   # Fork repository on GitHub
-   # Clone your fork
+   # Clone the team repo (it is a fork of the course repo)
    git clone https://github.com/thomas-more-devops/taskflow-4-IADI3.git
-   cd taskflow
-   
-   # Set upstream for updates
-    [https://github.com/original-owner/taskflow.git](https://github.com/thomas-more-devops/taskflow-4-IADI3.git)
+   cd taskflow-4-IADI3
+
+   # Optional: add the course repo as "upstream" to pull in its changes
+   git remote add upstream https://github.com/thomas-more-devops/w2-taskflow-files.git
    ```
 
 ### For Developers (Contribution)
@@ -110,7 +109,7 @@ xdg-open index.html
 
 2. **Open Project**
    ```bash
-   code taskflow
+   code taskflow-4-IADI3
    ```
 
 3. **Start Live Server**
@@ -194,7 +193,7 @@ npx serve .
 1. Check browser console for JavaScript errors
 2. Verify all files are in correct locations:
    ```
-   taskflow/
+   taskflow-4-IADI3/
    ├── index.html
    ├── styles/main.css
    └── scripts/app.js
