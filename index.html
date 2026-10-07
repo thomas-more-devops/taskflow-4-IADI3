@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    <!-- This is the head of the web page, it contains the title, a link to the .css stylesheet, as well as the font and charset used -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
 </head>
 <body>
     <div class="container">
+        <!-- Contains the actual header at the top of the page. -->
         <header class="header">
             <div class="header-content">
                 <h1 class="app-title">
@@ -18,7 +20,7 @@
                 <p class="app-subtitle">Streamline your productivity</p>
             </div>
         </header>
-
+        <!-- Contains main page section with input box and button as well an id tag used by scripts/app.js apply functionality to button -->
         <main class="main">
             <div class="task-input-section">
                 <div class="input-container">
@@ -29,7 +31,7 @@
                     </button>
                 </div>
             </div>
-
+            <!-- Sub-header for tasks section -->
             <div class="tasks-section">
                 <div class="tasks-header">
                     <h2>Your Tasks</h2>
@@ -44,7 +46,7 @@
                     <p>Add your first task above to get started!</p>
                 </div>
             </div>
-
+            <!-- Contains stats which will dynamically update when add, completing, removing tasks -->
             <div class="stats-section">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -62,7 +64,7 @@
                 </div>
             </div>
         </main>
-
+        <!-- Contains footer for page, with basic stack info and Year of creation. -->
         <footer class="footer">
             <p>&copy; 2024 TaskFlow. Built with HTML, CSS, and JavaScript.</p>
         </footer>
