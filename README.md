@@ -6,7 +6,7 @@
 **Try TaskFlow now:** [https://thomas-more-devops.github.io/taskflow-4-IADI3](https://thomas-more-devops.github.io/taskflow-4-IADI3)
 
 ## 📊 Project Status
-![TaskFlow](https://img.shields.io/badge/TaskFlow-v1.0.0-blue.svg)
+![TaskFlow](https://img.shields.io/badge/TaskFlow-v1.0.32-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/thomas-more-devops/taskflow-4-IADI3)
 ![GitHub issues](https://img.shields.io/github/issues/thomas-more-devops/taskflow-4-IADI3)
@@ -45,10 +45,11 @@ This project is part of the **Bachelor International Business Management - Data 
 ## 📱 Screenshots
 
 ### Desktop View
-*Professional task management interface with clean design*
+[Taskflow Desktop](https://github.com/thomas-more-devops/taskflow-4-IADI3/blob/fix/all/docs/Taskflow-4-Screenshot.png)
 
 ### Mobile View
-*Fully responsive design that works on all devices*
+[Taskflow Mobile 1](https://github.com/thomas-more-devops/taskflow-4-IADI3/blob/fix/all/docs/Taskflow-4-Screenshot-Mobile_1.png)
+[Taskflow Mobile 2](https://github.com/thomas-more-devops/taskflow-4-IADI3/blob/fix/all/docs/Taskflow-4-Screenshot-Mobile_2.png)
 
 ## 🏃 Quick Start
 
@@ -280,7 +281,6 @@ chore: maintenance tasks
 
 ## 📝 License
 
-⚠️⚠️⚠️**WIP**
 This project is open source and available under the [MIT LICENSE](https://github.com/thomas-more-devops/taskflow-4-IADI3/blob/main/LICENSE.md).
 
 ```
@@ -299,7 +299,6 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
-⚠️⚠️⚠️**WIP**
 
 ## 📞 Course Support
 
@@ -362,7 +361,7 @@ Thanks to all the students and developers who contributed to this project:
 
 ## 🔄 Version History
 
-### v1.0.0 (Current)
+### v1.0.32 (Current)
 - ✨ Initial release with core functionality
 - 🎨 Modern, responsive design
 - 💾 Local storage persistence
