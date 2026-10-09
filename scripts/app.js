@@ -1,6 +1,15 @@
 // TaskFlow: all logic of the to-do app lives in this one class.
-// Tasks are objects { id, text, completed, createdAt, completedAt }
+// Tasks are objects { id, text, completed, createdAt, completedAt, category }
 // and are saved in the browser's localStorage as JSON.
+
+// The categories a task can have. The keys match the <option> values
+// in #categorySelect and the data-filter values of the filter buttons.
+const CATEGORIES = {
+    work:     { label: 'Work',     icon: '💼' },
+    personal: { label: 'Personal', icon: '🏠' },
+    shopping: { label: 'Shopping', icon: '🛒' }
+};
+
 class TaskFlow {
 
     // Starts the app: loads saved tasks and the next id, hooks up the
@@ -8,8 +17,11 @@ class TaskFlow {
     constructor() {
         this.tasks = this.loadTasks();
         this.taskIdCounter = this.getNextTaskId();
+        // Which category the list shows: 'all' or a key of CATEGORIES
+        this.currentFilter = 'all';
         this.initializeApp();
         this.bindEvents();
+        this.setupFilters();
         this.renderTasks();
         this.updateStats();
     }
@@ -58,6 +70,20 @@ class TaskFlow {
         taskInput.focus();
     }
 
+    // Connects the category filter buttons. A click remembers the chosen
+    // category, marks that button as active and redraws the list.
+    setupFilters() {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.currentFilter = btn.dataset.filter;
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.renderTasks();
+            });
+        });
+    }
+
     // Adds a task from the input box. Shows a warning if the box is empty.
     // Saves the new task, redraws the list and updates the statistics.
     addTask() {
@@ -70,12 +96,15 @@ class TaskFlow {
             return;
         }
 
+        const category = document.getElementById('categorySelect').value;
+
         const newTask = {
             id: this.taskIdCounter++,
             text: taskText,
             completed: false,
             createdAt: new Date().toISOString(),
-            completedAt: null
+            completedAt: null,
+            category: category
         };
 
         this.tasks.push(newTask);
@@ -148,21 +177,31 @@ class TaskFlow {
         tasksList.style.display = 'flex';
         emptyState.style.display = 'none';
 
+        // Only keep the tasks of the chosen category ('all' keeps everything)
+        const visibleTasks = this.currentFilter === 'all'
+            ? this.tasks
+            : this.tasks.filter(task => task.category === this.currentFilter);
+
         // Sort tasks: incomplete first, then by creation date
-        const sortedTasks = [...this.tasks].sort((a, b) => {
+        const sortedTasks = [...visibleTasks].sort((a, b) => {
             if (a.completed !== b.completed) {
                 return a.completed - b.completed;
             }
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
 
-        tasksList.innerHTML = sortedTasks.map(task => `
+        tasksList.innerHTML = sortedTasks.map(task => {
+            // Unknown category (e.g. edited by hand in localStorage) shows as Personal
+            const categoryKey = CATEGORIES[task.category] ? task.category : 'personal';
+            const cat = CATEGORIES[categoryKey];
+            return `
             <div class="task-item ${task.completed ? 'completed' : ''}" data-task-id="${task.id}">
                 <div class="task-content">
                     <div class="task-checkbox ${task.completed ? 'checked' : ''}" 
                          onclick="taskFlow.toggleTask(${task.id})">
                     </div>
                     <span class="task-text">${this.escapeHtml(task.text)}</span>
+                    <span class="category-badge category-${categoryKey}">${cat.icon} ${cat.label}</span>
                 </div>
                 <div class="task-actions">
                     <button class="task-btn edit-btn" onclick="taskFlow.editTask(${task.id})" title="Edit task">
@@ -173,7 +212,8 @@ class TaskFlow {
                     </button>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     // Updates the Total / Completed / Pending counters and the task count in the header.
@@ -222,7 +262,9 @@ class TaskFlow {
                 return [];
             }
 
-            return parsed;
+            // Tasks saved before categories existed have no category: give them 'personal'.
+            // The spread (...task) comes last, so a saved category always wins.
+            return parsed.map(task => ({ category: 'personal', ...task }));
         } catch (error) {
             console.error('Failed to load tasks:', error);
             return [];

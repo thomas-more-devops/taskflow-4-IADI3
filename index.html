@@ -25,6 +25,11 @@
             <div class="task-input-section">
                 <div class="input-container">
                     <input type="text" id="taskInput" placeholder="What needs to be done?" class="task-input">
+                    <select id="categorySelect" class="category-select" aria-label="Task category">
+                        <option value="work">💼 Work</option>
+                        <option value="personal" selected>🏠 Personal</option>
+                        <option value="shopping">🛒 Shopping</option>
+                    </select>
                     <button id="addTaskBtn" class="add-btn">
                         <span class="add-icon">+</span>
                         Add Task
@@ -36,6 +41,12 @@
                 <div class="tasks-header">
                     <h2>Your Tasks</h2>
                     <span id="taskCount" class="task-count">0 tasks</span>
+                </div>
+                <div class="category-filters" role="group" aria-label="Filter tasks by category">
+                    <button type="button" class="filter-btn active" data-filter="all">All</button>
+                    <button type="button" class="filter-btn" data-filter="work">💼 Work</button>
+                    <button type="button" class="filter-btn" data-filter="personal">🏠 Personal</button>
+                    <button type="button" class="filter-btn" data-filter="shopping">🛒 Shopping</button>
                 </div>
                 <div id="tasksList" class="tasks-list">
                     <!-- Tasks will be dynamically added here -->
