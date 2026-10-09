@@ -398,3 +398,49 @@ body {
 .task-item {
     animation: slideIn 0.3s ease;
 }
+
+/* Task categories: dropdown, filter bar and colour-coded badges */
+.category-select {
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+    background: #fff;
+}
+
+.category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.filter-btn {
+    padding: 0.4rem 0.9rem;
+    border: 2px solid #667eea;
+    border-radius: 999px;
+    background: transparent;
+    color: #667eea;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: #667eea;
+    color: #fff;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    margin-left: 0.5rem;
+}
+
+.category-work     { background: #667eea; }
+.category-personal { background: #48bb78; }
+.category-shopping { background: #ed8936; }

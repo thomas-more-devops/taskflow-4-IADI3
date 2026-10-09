@@ -21,6 +21,18 @@ TaskFlow is a responsive task management application built with vanilla HTML, CS
 3. Task appears immediately in the list below
 4. Input field clears automatically for the next task
 
+### 🏷️ Task Categories
+- **Three Categories**: Work 💼, Personal 🏠 and Shopping 🛒
+- **Pick on Creation**: Choose a category from the dropdown next to the input field (Personal is the default)
+- **Colour-coded Badges**: Each task shows a badge with its category
+- **Filter Bar**: Show all tasks, or only the tasks of one category
+- **Stats Stay Complete**: Total / Completed / Pending always count every task, whatever filter is active
+- **Older Tasks**: Tasks saved before categories existed load as Personal
+
+**How to Use**:
+1. Pick a category in the dropdown, then add the task as usual
+2. Click a filter button (All / Work / Personal / Shopping) above the list to show only those tasks
+
 ### ✅ Task Completion
 - **Toggle Completion**: Click the checkbox to mark a task complete or incomplete
 - **Visual Feedback**: Completed tasks are shown with strikethrough styling
@@ -92,7 +104,6 @@ TaskFlow is a responsive task management application built with vanilla HTML, CS
 ## 🔮 Future Feature Roadmap
 
 ### 🎯 Planned Enhancements
-- **Task Categories**: Organize tasks by category
 - **Due Dates**: Set and track task deadlines
 - **Priority Levels**: High, medium, low priority
 - **Search & Filter**: Find tasks quickly

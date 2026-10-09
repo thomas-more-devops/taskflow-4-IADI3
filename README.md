@@ -328,7 +328,7 @@ This TaskFlow application demonstrates:
 ## 🎯 Future Enhancements
 
 Potential improvements for version 2.0:
-- [ ] **Task Categories**: Color-coded categories (Work, Personal, Shopping)
+- [x] **Task Categories**: Color-coded categories (Work, Personal, Shopping)
 - [ ] **Due Dates**: Calendar integration and deadline reminders
 - [ ] **Priority Levels**: High, Medium, Low priority sorting
 - [ ] **Search & Filter**: Advanced task filtering capabilities
