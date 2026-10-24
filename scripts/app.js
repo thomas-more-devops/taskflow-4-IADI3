@@ -1,94 +1,62 @@
-// TaskFlow: all logic of the to-do app lives in this one class.
-// Tasks are objects { id, text, completed, createdAt, completedAt, category }
-// and are saved in the browser's localStorage as JSON.
-
-// The categories a task can have. The keys match the <option> values
-// in #categorySelect and the data-filter values of the filter buttons.
-const CATEGORIES = {
-    work:     { label: 'Work',     icon: '💼' },
-    personal: { label: 'Personal', icon: '🏠' },
-    shopping: { label: 'Shopping', icon: '🛒' }
-};
-
 class TaskFlow {
-
-    // Starts the app: loads saved tasks and the next id, hooks up the
-    // buttons, and draws the task list and statistics on the page.
     constructor() {
         this.tasks = this.loadTasks();
         this.taskIdCounter = this.getNextTaskId();
-        // Which category the list shows: 'all' or a key of CATEGORIES
         this.currentFilter = 'all';
         this.initializeApp();
         this.bindEvents();
-        this.setupFilters();
         this.renderTasks();
         this.updateStats();
+        this.setDefaultDueDate();
     }
 
-    // Logs a start message in the console and shows the welcome message.
     initializeApp() {
         console.log('TaskFlow initialized successfully!');
         this.showWelcomeMessage();
     }
 
-    // Logs a welcome message in the console when there are no tasks yet.
     showWelcomeMessage() {
         if (this.tasks.length === 0) {
             console.log('Welcome to TaskFlow! Add your first task to get started.');
         }
     }
 
-    // Connects the "Add Task" button and the Enter key to addTask().
-    // Needs the elements #addTaskBtn and #taskInput in index.html.
-    // Prints a clear error and stops if one of them is missing.
+    setDefaultDueDate() {
+        // Set default due date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dueDateInput = document.getElementById('dueDateInput');
+        dueDateInput.value = tomorrow.toISOString().split('T')[0];
+    }
+
     bindEvents() {
         const addTaskBtn = document.getElementById('addTaskBtn');
         const taskInput = document.getElementById('taskInput');
 
-        // If an id was renamed in index.html, getElementById returns null
-        // and addEventListener would crash with "Cannot read properties of null"
-        if (!addTaskBtn) {
-            console.error('TaskFlow: element with id "addTaskBtn" not found in index.html');
-        }
-        if (!taskInput) {
-            console.error('TaskFlow: element with id "taskInput" not found in index.html');
-        }
-        if (!addTaskBtn || !taskInput) {
-            return;
-        }
-
         addTaskBtn.addEventListener('click', () => this.addTask());
-        
+
         taskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.addTask();
             }
         });
 
+        // Due date filter buttons
+        document.querySelectorAll('.due-date-filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.setDueDateFilter(e.target.dataset.filter);
+            });
+        });
+
         // Focus on input when page loads
         taskInput.focus();
     }
 
-    // Connects the category filter buttons. A click remembers the chosen
-    // category, marks that button as active and redraws the list.
-    setupFilters() {
-        const buttons = document.querySelectorAll('.filter-btn');
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.currentFilter = btn.dataset.filter;
-                buttons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                this.renderTasks();
-            });
-        });
-    }
-
-    // Adds a task from the input box. Shows a warning if the box is empty.
-    // Saves the new task, redraws the list and updates the statistics.
     addTask() {
         const taskInput = document.getElementById('taskInput');
+        const dueDateInput = document.getElementById('dueDateInput');
         const taskText = taskInput.value.trim();
+        const dueDate = dueDateInput.value;
 
         if (taskText === '') {
             this.showNotification('Please enter a task description', 'warning');
@@ -96,30 +64,27 @@ class TaskFlow {
             return;
         }
 
-        const category = document.getElementById('categorySelect').value;
-
         const newTask = {
             id: this.taskIdCounter++,
             text: taskText,
+            dueDate: dueDate || null,
             completed: false,
             createdAt: new Date().toISOString(),
-            completedAt: null,
-            category: category
+            completedAt: null
         };
 
         this.tasks.push(newTask);
         this.saveTasks();
         this.renderTasks();
         this.updateStats();
-        
+
         taskInput.value = '';
+        this.setDefaultDueDate();
         taskInput.focus();
-        
+
         this.showNotification('Task added successfully!', 'success');
     }
 
-    // Deletes the task with this id after the user confirms.
-    // Needs: taskId (number). Deletion is permanent.
     deleteTask(taskId) {
         if (confirm('Are you sure you want to delete this task?')) {
             this.tasks = this.tasks.filter(task => task.id !== taskId);
@@ -130,8 +95,6 @@ class TaskFlow {
         }
     }
 
-    // Switches a task between done and not done, and records when it was completed.
-    // Needs: taskId (number). Called when the user clicks the checkbox.
     toggleTask(taskId) {
         const task = this.tasks.find(task => task.id === taskId);
         if (task) {
@@ -140,14 +103,12 @@ class TaskFlow {
             this.saveTasks();
             this.renderTasks();
             this.updateStats();
-            
+
             const message = task.completed ? 'Task completed! 🎉' : 'Task marked as pending';
             this.showNotification(message, 'success');
         }
     }
 
-    // Lets the user change a task's text in a popup prompt.
-    // Needs: taskId (number). Cancel or empty text keeps the old text.
     editTask(taskId) {
         const task = this.tasks.find(task => task.id === taskId);
         if (task) {
@@ -161,14 +122,82 @@ class TaskFlow {
         }
     }
 
-    // Draws the task list on the page: unfinished tasks first, newest on top.
-    // Shows the "empty" message instead when there are no tasks.
-    // Needs the elements #tasksList and #emptyState in index.html.
+    setDueDateFilter(filter) {
+        this.currentFilter = filter;
+
+        // Update button states
+        document.querySelectorAll('.due-date-filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+
+        this.renderTasks();
+    }
+
+    matchesDueDateFilter(task) {
+        const today = new Date().toISOString().split('T')[0];
+
+        switch (this.currentFilter) {
+            case 'all':
+                return true;
+            case 'due-today':
+                return task.dueDate === today;
+            case 'overdue':
+                return task.dueDate && task.dueDate < today && !task.completed;
+            case 'no-due-date':
+                return !task.dueDate;
+            default:
+                return true;
+        }
+    }
+
+    getFilteredTasks() {
+        return this.tasks.filter(task => this.matchesDueDateFilter(task));
+    }
+
+    isOverdue(task) {
+        if (!task.dueDate || task.completed) return false;
+        const today = new Date().toISOString().split('T')[0];
+        return task.dueDate < today;
+    }
+
+    isDueToday(task) {
+        if (!task.dueDate) return false;
+        const today = new Date().toISOString().split('T')[0];
+        return task.dueDate === today;
+    }
+
+    formatDueDate(dateString) {
+        if (!dateString) return '';
+
+        const date = new Date(dateString);
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const taskDate = date.toDateString();
+        const todayString = today.toDateString();
+        const tomorrowString = tomorrow.toDateString();
+
+        if (taskDate === todayString) {
+            return 'Today';
+        } else if (taskDate === tomorrowString) {
+            return 'Tomorrow';
+        } else {
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+            });
+        }
+    }
+
     renderTasks() {
         const tasksList = document.getElementById('tasksList');
         const emptyState = document.getElementById('emptyState');
+        const filteredTasks = this.getFilteredTasks();
 
-        if (this.tasks.length === 0) {
+        if (filteredTasks.length === 0) {
             tasksList.style.display = 'none';
             emptyState.style.display = 'block';
             return;
@@ -177,62 +206,107 @@ class TaskFlow {
         tasksList.style.display = 'flex';
         emptyState.style.display = 'none';
 
-        // Only keep the tasks of the chosen category ('all' keeps everything)
-        const visibleTasks = this.currentFilter === 'all'
-            ? this.tasks
-            : this.tasks.filter(task => task.category === this.currentFilter);
-
-        // Sort tasks: incomplete first, then by creation date
-        const sortedTasks = [...visibleTasks].sort((a, b) => {
+        // Sort tasks: incomplete first, then by due date, then by creation date
+        const sortedTasks = [...filteredTasks].sort((a, b) => {
+            // First sort by completion status
             if (a.completed !== b.completed) {
                 return a.completed - b.completed;
             }
+
+            // Then sort by due date (overdue first, then by date)
+            if (a.dueDate && b.dueDate) {
+                return new Date(a.dueDate) - new Date(b.dueDate);
+            } else if (a.dueDate) {
+                return -1;
+            } else if (b.dueDate) {
+                return 1;
+            }
+
+            // Finally sort by creation date (newest first)
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
 
         tasksList.innerHTML = sortedTasks.map(task => {
-            // Unknown category (e.g. edited by hand in localStorage) shows as Personal
-            const categoryKey = CATEGORIES[task.category] ? task.category : 'personal';
-            const cat = CATEGORIES[categoryKey];
+            const isOverdue = this.isOverdue(task);
+            const isDueToday = this.isDueToday(task);
+            const dueDateText = this.formatDueDate(task.dueDate);
+
             return `
-            <div class="task-item ${task.completed ? 'completed' : ''}" data-task-id="${task.id}">
-                <div class="task-content">
-                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" 
-                         onclick="taskFlow.toggleTask(${task.id})">
+                <div class="task-item ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''} ${isDueToday ? 'due-today' : ''}" data-task-id="${task.id}">
+                    <div class="task-content">
+                        <div class="task-checkbox ${task.completed ? 'checked' : ''}"
+                             onclick="taskFlow.toggleTask(${task.id})">
+                        </div>
+                        <span class="task-text">${this.escapeHtml(task.text)}</span>
+                        ${task.dueDate ? `
+                            <span class="due-date-badge ${isOverdue ? 'overdue' : ''} ${isDueToday ? 'due-today' : ''}">
+                                📅 ${dueDateText}
+                            </span>
+                        ` : ''}
                     </div>
-                    <span class="task-text">${this.escapeHtml(task.text)}</span>
-                    <span class="category-badge category-${categoryKey}">${cat.icon} ${cat.label}</span>
+                    <div class="task-actions">
+                        <button class="task-btn edit-btn" onclick="taskFlow.editTask(${task.id})" title="Edit task">
+                            ✏️
+                        </button>
+                        <button class="task-btn delete-btn" onclick="taskFlow.deleteTask(${task.id})" title="Delete task">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
-                <div class="task-actions">
-                    <button class="task-btn edit-btn" onclick="taskFlow.editTask(${task.id})" title="Edit task">
-                        ✏️
-                    </button>
-                    <button class="task-btn delete-btn" onclick="taskFlow.deleteTask(${task.id})" title="Delete task">
-                        🗑️
-                    </button>
-                </div>
-            </div>
-        `;
+            `;
         }).join('');
     }
 
-    // Updates the Total / Completed / Pending counters and the task count in the header.
     updateStats() {
         const totalTasks = this.tasks.length;
         const completedTasks = this.tasks.filter(task => task.completed).length;
         const pendingTasks = totalTasks - completedTasks;
+        const overdueTasks = this.tasks.filter(task => this.isOverdue(task)).length;
 
         document.getElementById('totalTasks').textContent = totalTasks;
         document.getElementById('completedTasks').textContent = completedTasks;
         document.getElementById('pendingTasks').textContent = pendingTasks;
-        
+        document.getElementById('overdueTasks').textContent = overdueTasks;
+
         // Update task count in header
         const taskCount = document.getElementById('taskCount');
         taskCount.textContent = `${totalTasks} ${totalTasks === 1 ? 'task' : 'tasks'}`;
+
+        // Update due date statistics
+        this.updateDueDateStats();
     }
 
-    // Saves all tasks and the id counter to localStorage so they survive a page reload.
-    // Shows an error notification if the browser storage is full or blocked.
+    updateDueDateStats() {
+        const dueDateStats = document.getElementById('dueDateStats');
+        const today = new Date().toISOString().split('T')[0];
+
+        const stats = {
+            dueToday: this.tasks.filter(task => task.dueDate === today && !task.completed).length,
+            overdue: this.tasks.filter(task => this.isOverdue(task)).length,
+            upcoming: this.tasks.filter(task => task.dueDate && task.dueDate > today && !task.completed).length,
+            noDueDate: this.tasks.filter(task => !task.dueDate && !task.completed).length
+        };
+
+        dueDateStats.innerHTML = `
+            <div class="stat-item">
+                <span class="stat-icon">📅</span>
+                <span class="stat-text">Due Today: ${stats.dueToday}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">⚠️</span>
+                <span class="stat-text">Overdue: ${stats.overdue}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📋</span>
+                <span class="stat-text">Upcoming: ${stats.upcoming}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📝</span>
+                <span class="stat-text">No Due Date: ${stats.noDueDate}</span>
+            </div>
+        `;
+    }
+
     saveTasks() {
         try {
             localStorage.setItem('taskflow_tasks', JSON.stringify(this.tasks));
@@ -243,60 +317,32 @@ class TaskFlow {
         }
     }
 
-    // Reads the saved task list from localStorage.
-    // Returns an empty list if nothing is saved, the JSON is broken,
-    // or the saved value is not a list (for example someone saved 5).
     loadTasks() {
         try {
             const saved = localStorage.getItem('taskflow_tasks');
-            if (!saved) {
-                return [];
-            }
+            const tasks = saved ? JSON.parse(saved) : [];
 
-            const parsed = JSON.parse(saved);
-
-            // Valid JSON can still be the wrong type (5, "hello", {}),
-            // so only accept it if it is an array
-            if (!Array.isArray(parsed)) {
-                console.error('Saved tasks are not a list, starting with an empty list:', parsed);
-                return [];
-            }
-
-            // Tasks saved before categories existed have no category: give them 'personal'.
-            // The spread (...task) comes last, so a saved category always wins.
-            return parsed.map(task => ({ category: 'personal', ...task }));
+            // Add default due date to existing tasks for backward compatibility
+            return tasks.map(task => ({
+                ...task,
+                dueDate: task.dueDate || null
+            }));
         } catch (error) {
             console.error('Failed to load tasks:', error);
             return [];
         }
     }
 
-    // Reads the next free task id from localStorage. Starts at 1 if nothing is saved
-    // or if the saved value is not a number (for example "abc").
     getNextTaskId() {
         try {
             const saved = localStorage.getItem('taskflow_counter');
-            if (!saved) {
-                return 1;
-            }
-
-            const id = parseInt(saved, 10);
-
-            // parseInt("abc") gives NaN, which would give new tasks the id NaN
-            if (Number.isNaN(id)) {
-                console.error('Saved task counter is not a number, starting at 1:', saved);
-                return 1;
-            }
-
-            return id;
+            return saved ? parseInt(saved) : 1;
         } catch (error) {
             console.error('Failed to load task counter:', error);
             return 1;
         }
     }
 
-    // Makes user text safe to put in HTML by replacing special characters (& < > " ').
-    // Prevents someone from injecting HTML or scripts through a task name (XSS).
     escapeHtml(unsafe) {
         return unsafe
             .replace(/&/g, "&amp;")
@@ -306,12 +352,10 @@ class TaskFlow {
             .replace(/'/g, "&#039;");
     }
 
-    // Shows a colored pop-up message in the top right for 3 seconds, and logs it.
-    // Needs: message (text) and type ('success', 'error', 'warning' or 'info').
     showNotification(message, type = 'info') {
         // Simple notification system
         console.log(`[${type.toUpperCase()}] ${message}`);
-        
+
         // Create notification element
         const notification = document.createElement('div');
         notification.style.cssText = `
@@ -337,18 +381,18 @@ class TaskFlow {
             warning: '#ed8936',
             info: '#3182ce'
         };
-        
+
         notification.style.background = colors[type] || colors.info;
         notification.textContent = message;
-        
+
         document.body.appendChild(notification);
-        
+
         // Animate in
         setTimeout(() => {
             notification.style.opacity = '1';
             notification.style.transform = 'translateY(0)';
         }, 100);
-        
+
         // Remove after 3 seconds
         setTimeout(() => {
             notification.style.opacity = '0';
@@ -360,25 +404,20 @@ class TaskFlow {
     }
 
     // Utility methods for potential future features
-
-    // Downloads all tasks as a JSON file (taskflow_backup.json).
-    // Not used yet: there is no export button in the app.
     exportTasks() {
         const dataStr = JSON.stringify(this.tasks, null, 2);
         const dataBlob = new Blob([dataStr], {type: 'application/json'});
         const url = URL.createObjectURL(dataBlob);
-        
+
         const link = document.createElement('a');
         link.href = url;
         link.download = 'taskflow_backup.json';
         link.click();
-        
+
         URL.revokeObjectURL(url);
         this.showNotification('Tasks exported successfully!', 'success');
     }
 
-    // Deletes all tasks at once after the user confirms.
-    // Not used yet: there is no "clear all" button in the app.
     clearAllTasks() {
         if (confirm('Are you sure you want to delete ALL tasks? This cannot be undone.')) {
             this.tasks = [];
@@ -389,14 +428,17 @@ class TaskFlow {
         }
     }
 
-    // Returns an object with task counts: total, completed, pending,
-    // created today and completed today. Not shown in the app yet.
     getTaskStats() {
         const now = new Date();
+        const today = now.toISOString().split('T')[0];
+
         const stats = {
             total: this.tasks.length,
             completed: this.tasks.filter(t => t.completed).length,
             pending: this.tasks.filter(t => !t.completed).length,
+            dueToday: this.tasks.filter(t => t.dueDate === today && !t.completed).length,
+            overdue: this.tasks.filter(t => this.isOverdue(t)).length,
+            upcoming: this.tasks.filter(t => t.dueDate && t.dueDate > today && !t.completed).length,
             createdToday: this.tasks.filter(t => {
                 const taskDate = new Date(t.createdAt);
                 return taskDate.toDateString() === now.toDateString();

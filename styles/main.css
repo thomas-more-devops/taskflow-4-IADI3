@@ -7,8 +7,7 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    /* Purple diagonal gradient (blue-violet #667eea to purple #764ba2). This is the app's main brand color. */
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     line-height: 1.6;
     color: #333;
@@ -35,7 +34,6 @@ body {
     padding: 2rem;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    /* Frosted glass effect: blurs the gradient behind this box so the text on it stays easy to read. */
     backdrop-filter: blur(10px);
 }
 
@@ -80,6 +78,50 @@ body {
     align-items: center;
 }
 
+.input-options {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.date-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f8fafc;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.date-input-container:focus-within {
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.date-label {
+    font-size: 0.9rem;
+    color: #4a5568;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.date-input {
+    border: none;
+    background: transparent;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: #4a5568;
+    cursor: pointer;
+}
+
+.date-input:focus {
+    outline: none;
+}
+
 .task-input {
     flex: 1;
     border: 2px solid #e2e8f0;
@@ -102,7 +144,6 @@ body {
     color: #a0aec0;
 }
 
-/* Same gradient as the page background, so the main action button matches the look of the whole app. */
 .add-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -131,6 +172,60 @@ body {
 .add-icon {
     font-size: 1.2rem;
     font-weight: bold;
+}
+
+/* Due Date Filter Section */
+.due-date-filters {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.due-date-filters h3 {
+    margin-bottom: 1rem;
+    color: #2d3748;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.due-date-filter-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.due-date-filter-btn {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    color: #4a5568;
+}
+
+.due-date-filter-btn:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.due-date-filter-btn.active {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.filter-icon {
+    font-size: 1rem;
 }
 
 /* Tasks Section */
@@ -196,6 +291,51 @@ body {
     opacity: 0.8;
 }
 
+.task-item.overdue {
+    border-left: 4px solid #e53e3e;
+    background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+    animation: pulse-warning 2s infinite;
+}
+
+.task-item.due-today {
+    border-left: 4px solid #ed8936;
+    background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+}
+
+@keyframes pulse-warning {
+    0%, 100% { box-shadow: 0 4px 15px rgba(229, 62, 62, 0.2); }
+    50% { box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4); }
+}
+
+.due-date-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.due-date-badge.due-today {
+    background: #ed8936;
+    color: white;
+}
+
+.due-date-badge.overdue {
+    background: #e53e3e;
+    color: white;
+    animation: pulse-badge 1.5s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
 .task-content {
     display: flex;
     align-items: center;
@@ -235,7 +375,6 @@ body {
     transition: all 0.3s ease;
 }
 
-/* A finished task gets a line through the text and a grey color, so it is clearly done but still readable. */
 .task-item.completed .task-text {
     text-decoration: line-through;
     color: #718096;
@@ -302,6 +441,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .stat-card {
@@ -310,6 +450,15 @@ body {
     border-radius: 12px;
     text-align: center;
     border: 1px solid #e2e8f0;
+}
+
+.stat-card.overdue-stats {
+    background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+    border-color: #feb2b2;
+}
+
+.overdue-stats .stat-number {
+    color: #e53e3e;
 }
 
 .stat-number {
@@ -326,6 +475,44 @@ body {
     font-weight: 500;
 }
 
+.detailed-analytics {
+    border-top: 2px solid #f1f5f9;
+    padding-top: 1.5rem;
+}
+
+.analytics-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+}
+
+.due-date-stats-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.stat-icon {
+    font-size: 1.2rem;
+}
+
+.stat-text {
+    font-size: 0.9rem;
+    color: #4a5568;
+    font-weight: 500;
+}
+
 /* Footer */
 .footer {
     text-align: center;
@@ -336,53 +523,83 @@ body {
 }
 
 /* Responsive Design */
-/* Tablets and smaller (768px or less): less padding, smaller title, the input box and button stack on top of each other, and the task list header stacks too. */
 @media (max-width: 768px) {
     .container {
         padding: 1rem 0.5rem;
     }
-    
+
     .app-title {
         font-size: 2rem;
     }
-    
+
     .input-container {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
+    .input-options {
+        grid-template-columns: 1fr;
+        order: -1;
+    }
+
     .add-btn {
         justify-content: center;
     }
-    
+
     .task-item {
         padding: 1rem;
     }
-    
+
     .tasks-header {
         flex-direction: column;
         gap: 1rem;
         align-items: flex-start;
     }
+
+    .due-date-filter-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .due-date-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+    }
 }
 
-/* Small phones (480px or less): the three stat cards stack into one column, and the title and header get smaller. */
 @media (max-width: 480px) {
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .app-title {
         font-size: 1.75rem;
     }
-    
+
     .header-content {
         padding: 1.5rem;
+    }
+
+    .task-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .due-date-badge {
+        margin-left: 0;
+        align-self: flex-start;
+    }
+
+    .due-date-filter-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .due-date-stats-list {
+        grid-template-columns: 1fr;
     }
 }
 
 /* Animation Classes */
-/* New tasks start invisible and 20px lower, then fade in while sliding up to their place. */
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -394,53 +611,6 @@ body {
     }
 }
 
-/* Second .task-item rule: it only adds the slide-in animation (0.3s). It's kept apart from the first rule so the animation sits next to its @keyframes. */
 .task-item {
     animation: slideIn 0.3s ease;
 }
-
-/* Task categories: dropdown, filter bar and colour-coded badges */
-.category-select {
-    padding: 0.75rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    font-family: inherit;
-    background: #fff;
-}
-
-.category-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 1rem 0;
-}
-
-.filter-btn {
-    padding: 0.4rem 0.9rem;
-    border: 2px solid #667eea;
-    border-radius: 999px;
-    background: transparent;
-    color: #667eea;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.filter-btn.active,
-.filter-btn:hover {
-    background: #667eea;
-    color: #fff;
-}
-
-.category-badge {
-    display: inline-block;
-    padding: 0.15rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #fff;
-    margin-left: 0.5rem;
-}
-
-.category-work     { background: #667eea; }
-.category-personal { background: #48bb78; }
-.category-shopping { background: #ed8936; }

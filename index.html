@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!-- This is the head of the web page, it contains the title, a link to the .css stylesheet, as well as the font and charset used -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +9,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Contains the actual header at the top of the page. -->
         <header class="header">
             <div class="header-content">
                 <h1 class="app-title">
@@ -20,33 +18,51 @@
                 <p class="app-subtitle">Streamline your productivity</p>
             </div>
         </header>
-        <!-- Contains main page section with input box and button as well an id tag used by scripts/app.js apply functionality to button -->
+
         <main class="main">
             <div class="task-input-section">
                 <div class="input-container">
                     <input type="text" id="taskInput" placeholder="What needs to be done?" class="task-input">
-                    <select id="categorySelect" class="category-select" aria-label="Task category">
-                        <option value="work">💼 Work</option>
-                        <option value="personal" selected>🏠 Personal</option>
-                        <option value="shopping">🛒 Shopping</option>
-                    </select>
+                    <div class="input-options">
+                        <div class="date-input-container">
+                            <label for="dueDateInput" class="date-label">Due:</label>
+                            <input type="date" id="dueDateInput" class="date-input">
+                        </div>
+                    </div>
                     <button id="addTaskBtn" class="add-btn">
                         <span class="add-icon">+</span>
                         Add Task
                     </button>
                 </div>
             </div>
-            <!-- Sub-header for tasks section -->
+
+            <!-- Due Date Filter Section -->
+            <div class="due-date-filters">
+                <h3>Filter by Due Date:</h3>
+                <div class="due-date-filter-buttons">
+                    <button class="due-date-filter-btn active" data-filter="all">
+                        <span class="filter-icon">📋</span>
+                        All Tasks
+                    </button>
+                    <button class="due-date-filter-btn" data-filter="due-today">
+                        <span class="filter-icon">📅</span>
+                        Due Today
+                    </button>
+                    <button class="due-date-filter-btn" data-filter="overdue">
+                        <span class="filter-icon">⚠️</span>
+                        Overdue
+                    </button>
+                    <button class="due-date-filter-btn" data-filter="no-due-date">
+                        <span class="filter-icon">📝</span>
+                        No Due Date
+                    </button>
+                </div>
+            </div>
+
             <div class="tasks-section">
                 <div class="tasks-header">
                     <h2>Your Tasks</h2>
                     <span id="taskCount" class="task-count">0 tasks</span>
-                </div>
-                <div class="category-filters" role="group" aria-label="Filter tasks by category">
-                    <button type="button" class="filter-btn active" data-filter="all">All</button>
-                    <button type="button" class="filter-btn" data-filter="work">💼 Work</button>
-                    <button type="button" class="filter-btn" data-filter="personal">🏠 Personal</button>
-                    <button type="button" class="filter-btn" data-filter="shopping">🛒 Shopping</button>
                 </div>
                 <div id="tasksList" class="tasks-list">
                     <!-- Tasks will be dynamically added here -->
@@ -57,7 +73,7 @@
                     <p>Add your first task above to get started!</p>
                 </div>
             </div>
-            <!-- Contains stats which will dynamically update when add, completing, removing tasks -->
+
             <div class="stats-section">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -72,10 +88,23 @@
                         <span class="stat-number" id="pendingTasks">0</span>
                         <span class="stat-label">Pending</span>
                     </div>
+                    <div class="stat-card overdue-stats">
+                        <span class="stat-number" id="overdueTasks">0</span>
+                        <span class="stat-label">Overdue</span>
+                    </div>
+                </div>
+
+                <div class="detailed-analytics">
+                    <div class="analytics-section">
+                        <h3>Due Date Overview</h3>
+                        <div id="dueDateStats" class="due-date-stats-list">
+                            <!-- Due date statistics will be populated here -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
-        <!-- Contains footer for page, with basic stack info and Year of creation. -->
+
         <footer class="footer">
             <p>&copy; 2024 TaskFlow. Built with HTML, CSS, and JavaScript.</p>
         </footer>
