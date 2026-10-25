@@ -22,6 +22,7 @@ class TaskFlow {
         this.initializeApp();
         this.bindEvents();
         this.setupFilters();
+        this.initTheme();
         this.renderTasks();
         this.updateStats();
     }
@@ -81,6 +82,45 @@ class TaskFlow {
                 btn.classList.add('active');
                 this.renderTasks();
             });
+        });
+    }
+
+    // Sets up the dark/light theme toggle (#themeToggle).
+    // Start theme: the saved choice, else the system preference, else light.
+    // A click switches the theme and saves it under its own key
+    // ('taskflow_theme') so it never collides with 'taskflow_tasks'.
+    initTheme() {
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+
+        // Sets data-theme on <html> and updates the icon and accessibility labels
+        const apply = (theme) => {
+            document.documentElement.setAttribute('data-theme', theme);
+            const isDark = theme === 'dark';
+            btn.textContent = isDark ? '☀️' : '🌙';
+            btn.setAttribute('aria-pressed', String(isDark));
+            btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+        };
+
+        // Read the saved theme (storage can be blocked, so use try/catch)
+        let saved = null;
+        try {
+            saved = localStorage.getItem('taskflow_theme');
+        } catch (e) { /* storage unavailable */ }
+        if (saved !== 'dark' && saved !== 'light') {
+            saved = null;
+        }
+
+        const prefersDark = window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches;
+        apply(saved || (prefersDark ? 'dark' : 'light'));
+
+        btn.addEventListener('click', () => {
+            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            apply(next);
+            try {
+                localStorage.setItem('taskflow_theme', next);
+            } catch (e) { /* storage unavailable */ }
         });
     }
 
@@ -313,10 +353,11 @@ class TaskFlow {
         console.log(`[${type.toUpperCase()}] ${message}`);
         
         // Create notification element
+        // top: 76px keeps it below the fixed theme toggle button (top 1rem + 44px)
         const notification = document.createElement('div');
         notification.style.cssText = `
             position: fixed;
-            top: 20px;
+            top: 76px;
             right: 20px;
             padding: 1rem 1.5rem;
             border-radius: 8px;
