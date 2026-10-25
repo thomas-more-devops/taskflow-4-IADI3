@@ -1,4 +1,26 @@
 /* Reset and Base Styles */
+:root {
+  --color-primary: #667eea;
+  --color-secondary: #764ba2;
+  --color-bg: #f7fafc;
+  --color-surface: #ffffff;
+  --color-text: #2d3748;
+  --color-text-muted: #718096;
+  --color-border: #e2e8f0;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #121826;
+  --color-surface: #1e2533;
+  --color-text: #e2e8f0;
+  --color-text-muted: #a0aec0;
+  --color-border: #2d3748;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+
 * {
     margin: 0;
     padding: 0;
