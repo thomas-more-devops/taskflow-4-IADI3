@@ -45,11 +45,11 @@ This project is part of the **Bachelor International Business Management - Data 
 ## 📱 Screenshots
 
 ### Desktop View
-[Taskflow Desktop](https://github.com/thomas-more-devops/taskflow-4-IADI3/blob/fix/all/docs/Taskflow-4-Screenshot.png)
+![Taskflow Desktop](docs/Taskflow-4-Screenshot.png)
 
 ### Mobile View
-[Taskflow Mobile 1](https://github.com/thomas-more-devops/taskflow-4-IADI3/blob/fix/all/docs/Taskflow-4-Screenshot-Mobile_1.png)
-[Taskflow Mobile 2](https://github.com/thomas-more-devops/taskflow-4-IADI3/blob/fix/all/docs/Taskflow-4-Screenshot-Mobile_2.png)
+![Taskflow Mobile 1](docs/Taskflow-4-Screenshot-Mobile_1.png)
+![Taskflow Mobile 2](docs/Taskflow-4-Screenshot-Mobile_2.png)
 
 ## 🏃 Quick Start
 

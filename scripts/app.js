@@ -1,5 +1,5 @@
 // TaskFlow: all logic of the to-do app lives in this one class.
-// Tasks are objects { id, text, completed, createdAt, completedAt, category }
+// Tasks are objects { id, text, completed, createdAt, completedAt, category, priority }
 // and are saved in the browser's localStorage as JSON.
 
 // The categories a task can have. The keys match the <option> values
@@ -8,6 +8,12 @@ const CATEGORIES = {
     work:     { label: 'Work',     icon: '💼' },
     personal: { label: 'Personal', icon: '🏠' },
     shopping: { label: 'Shopping', icon: '🛒' }
+};
+
+const PRIORITIES = {
+    high: { label: 'High', rank: 0 },
+    medium: { label: 'Medium', rank: 1 },
+    low: { label: 'Low', rank: 2 }
 };
 
 class TaskFlow {
@@ -137,6 +143,7 @@ class TaskFlow {
         }
 
         const category = document.getElementById('categorySelect').value;
+        const priority = document.getElementById('prioritySelect').value;
 
         const newTask = {
             id: this.taskIdCounter++,
@@ -144,7 +151,8 @@ class TaskFlow {
             completed: false,
             createdAt: new Date().toISOString(),
             completedAt: null,
-            category: category
+            category: category,
+            priority: priority
         };
 
         this.tasks.push(newTask);
@@ -201,7 +209,16 @@ class TaskFlow {
         }
     }
 
-    // Draws the task list on the page: unfinished tasks first, newest on top.
+    updatePriority(taskId, priority) {
+        const task = this.tasks.find(task => task.id === taskId);
+        if (!task || !PRIORITIES[priority]) return;
+
+        task.priority = priority;
+        this.saveTasks();
+        this.renderTasks();
+    }
+
+    // Draws unfinished tasks first, ordered by priority and then creation date.
     // Shows the "empty" message instead when there are no tasks.
     // Needs the elements #tasksList and #emptyState in index.html.
     renderTasks() {
@@ -222,10 +239,15 @@ class TaskFlow {
             ? this.tasks
             : this.tasks.filter(task => task.category === this.currentFilter);
 
-        // Sort tasks: incomplete first, then by creation date
+        // Sort tasks: incomplete first, then high priority, then newest.
         const sortedTasks = [...visibleTasks].sort((a, b) => {
             if (a.completed !== b.completed) {
                 return a.completed - b.completed;
+            }
+            const priorityA = PRIORITIES[a.priority] ? a.priority : 'medium';
+            const priorityB = PRIORITIES[b.priority] ? b.priority : 'medium';
+            if (priorityA !== priorityB) {
+                return PRIORITIES[priorityA].rank - PRIORITIES[priorityB].rank;
             }
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
@@ -234,6 +256,7 @@ class TaskFlow {
             // Unknown category (e.g. edited by hand in localStorage) shows as Personal
             const categoryKey = CATEGORIES[task.category] ? task.category : 'personal';
             const cat = CATEGORIES[categoryKey];
+            const priorityKey = PRIORITIES[task.priority] ? task.priority : 'medium';
             return `
             <div class="task-item ${task.completed ? 'completed' : ''}" data-task-id="${task.id}">
                 <div class="task-content">
@@ -242,6 +265,12 @@ class TaskFlow {
                     </div>
                     <span class="task-text">${this.escapeHtml(task.text)}</span>
                     <span class="category-badge category-${categoryKey}">${cat.icon} ${cat.label}</span>
+                    <select class="task-priority priority-${priorityKey}" aria-label="Task priority"
+                            onchange="taskFlow.updatePriority(${task.id}, this.value)">
+                        <option value="high" ${priorityKey === 'high' ? 'selected' : ''}>High</option>
+                        <option value="medium" ${priorityKey === 'medium' ? 'selected' : ''}>Medium</option>
+                        <option value="low" ${priorityKey === 'low' ? 'selected' : ''}>Low</option>
+                    </select>
                 </div>
                 <div class="task-actions">
                     <button class="task-btn edit-btn" onclick="taskFlow.editTask(${task.id})" title="Edit task">
@@ -302,9 +331,9 @@ class TaskFlow {
                 return [];
             }
 
-            // Tasks saved before categories existed have no category: give them 'personal'.
+            // Older tasks without categories or priorities receive safe defaults.
             // The spread (...task) comes last, so a saved category always wins.
-            return parsed.map(task => ({ category: 'personal', ...task }));
+            return parsed.map(task => ({ category: 'personal', priority: 'medium', ...task }));
         } catch (error) {
             console.error('Failed to load tasks:', error);
             return [];

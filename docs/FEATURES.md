@@ -33,6 +33,13 @@ TaskFlow is a responsive task management application built with vanilla HTML, CS
 1. Pick a category in the dropdown, then add the task as usual
 2. Click a filter button (All / Work / Personal / Shopping) above the list to show only those tasks
 
+### 🚦 Task Priorities
+- **Three Levels**: High, Medium and Low
+- **Pick on Creation**: Choose a priority when adding a task (Medium is the default)
+- **Change Any Time**: Use the priority dropdown on a task to update its priority
+- **Priority Ordering**: Pending tasks are ordered High, Medium, then Low; completed tasks remain below pending tasks
+- **Older Tasks**: Tasks saved before priorities existed load as Medium
+
 ### ✅ Task Completion
 - **Toggle Completion**: Click the checkbox to mark a task complete or incomplete
 - **Visual Feedback**: Completed tasks are shown with strikethrough styling
@@ -87,7 +94,7 @@ TaskFlow is a responsive task management application built with vanilla HTML, CS
 - **Typography**: Inter font family throughout
 - **Toast Notifications**: Color-coded pop-ups — success (green), error (red), warning (orange)
 - **Empty State**: Message shown when there are no tasks
-- **Smart Sorting**: Incomplete tasks are shown first, newest on top
+- **Smart Sorting**: Incomplete tasks are shown first, then by priority and creation date
 
 ## 🔧 Technical Details
 
@@ -105,7 +112,6 @@ TaskFlow is a responsive task management application built with vanilla HTML, CS
 
 ### 🎯 Planned Enhancements
 - **Due Dates**: Set and track task deadlines
-- **Priority Levels**: High, medium, low priority
 - **Search & Filter**: Find tasks quickly
 - **Dark Mode**: Alternative dark theme
 - **Task Notes**: Add detailed notes to tasks
