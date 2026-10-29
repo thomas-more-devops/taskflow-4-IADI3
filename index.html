@@ -1,67 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!-- This is the head of the web page, it contains the title, a link to the .css stylesheet, as well as the font and charset used -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow - Task Management App</title>
-
-    <script>
-  (function () {
-    try {
-      var saved = localStorage.getItem('taskflow_theme');
-      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
-    } catch (e) {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
-  })();
-</script>
-    
+    <title>TaskFlow - Complete Task Management App</title>
     <link rel="stylesheet" href="styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <button id="themeToggle" class="theme-toggle" type="button"
-        aria-label="Switch to dark theme" aria-pressed="false">🌙</button>
     <div class="container">
-        <!-- Contains the actual header at the top of the page. -->
         <header class="header">
             <div class="header-content">
                 <h1 class="app-title">
                     <span class="icon">📋</span>
                     TaskFlow
                 </h1>
-                <p class="app-subtitle">Streamline your productivity</p>
+                <p class="app-subtitle">Complete productivity management system</p>
             </div>
         </header>
-        <!-- Contains main page section with input box and button as well an id tag used by scripts/app.js apply functionality to button -->
+
         <main class="main">
+            <!-- Task Input Section -->
             <div class="task-input-section">
                 <div class="input-container">
                     <input type="text" id="taskInput" placeholder="What needs to be done?" class="task-input">
-                    <select id="categorySelect" class="category-select" aria-label="Task category">
-                        <option value="work">💼 Work</option>
-                        <option value="personal" selected>🏠 Personal</option>
-                        <option value="shopping">🛒 Shopping</option>
-                    </select>
                     <button id="addTaskBtn" class="add-btn">
                         <span class="add-icon">+</span>
                         Add Task
                     </button>
                 </div>
             </div>
-            <!-- Sub-header for tasks section -->
+
+            <!-- Search & Filter Section -->
+            <div class="search-filter-section">
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Search tasks..." class="search-input">
+                        <button id="clearSearch" class="clear-search" title="Clear search">✕</button>
+                    </div>
+                </div>
+
+                <div class="filter-container">
+                    <div class="filter-section">
+                        <h3>Quick Filters:</h3>
+                        <div class="quick-filters">
+                            <button class="filter-btn active" data-filter="all">
+                                <span class="filter-icon">📋</span>
+                                All Tasks
+                            </button>
+                            <button class="filter-btn" data-filter="completed">
+                                <span class="filter-icon">✅</span>
+                                Completed
+                            </button>
+                            <button class="filter-btn" data-filter="pending">
+                                <span class="filter-icon">⏳</span>
+                                Pending
+                            </button>
+                            <button class="filter-btn" data-filter="recent">
+                                <span class="filter-icon">🆕</span>
+                                Recent
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="advanced-filters">
+                        <button id="toggleAdvanced" class="toggle-advanced">
+                            <span>Advanced Options</span>
+                            <span class="toggle-icon">▼</span>
+                        </button>
+                        <div id="advancedPanel" class="advanced-panel">
+                            <div class="filter-group">
+                                <label>Sort by:</label>
+                                <select id="sortSelect" class="sort-select">
+                                    <option value="created-desc">Newest First</option>
+                                    <option value="created-asc">Oldest First</option>
+                                    <option value="alphabetical">Alphabetical</option>
+                                    <option value="completion">Completion Status</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="clearAllFilters" class="clear-filters-btn">Clear All Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Section -->
             <div class="tasks-section">
                 <div class="tasks-header">
                     <h2>Your Tasks</h2>
-                    <span id="taskCount" class="task-count">0 tasks</span>
-                </div>
-                <div class="category-filters" role="group" aria-label="Filter tasks by category">
-                    <button type="button" class="filter-btn active" data-filter="all">All</button>
-                    <button type="button" class="filter-btn" data-filter="work">💼 Work</button>
-                    <button type="button" class="filter-btn" data-filter="personal">🏠 Personal</button>
-                    <button type="button" class="filter-btn" data-filter="shopping">🛒 Shopping</button>
+                    <div class="header-info">
+                        <span id="searchResults" class="search-results"></span>
+                        <span id="taskCount" class="task-count">0 tasks</span>
+                    </div>
                 </div>
                 <div id="tasksList" class="tasks-list">
                     <!-- Tasks will be dynamically added here -->
@@ -71,8 +104,14 @@
                     <h3>No tasks yet</h3>
                     <p>Add your first task above to get started!</p>
                 </div>
+                <div id="noResults" class="no-results" style="display: none;">
+                    <div class="empty-icon">🔍</div>
+                    <h3>No tasks found</h3>
+                    <p>Try adjusting your search or filters</p>
+                </div>
             </div>
-            <!-- Contains stats which will dynamically update when add, completing, removing tasks -->
+
+            <!-- Statistics Section -->
             <div class="stats-section">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -87,12 +126,16 @@
                         <span class="stat-number" id="pendingTasks">0</span>
                         <span class="stat-label">Pending</span>
                     </div>
+                    <div class="stat-card search-stats">
+                        <span class="stat-number" id="filteredTasks">0</span>
+                        <span class="stat-label">Shown</span>
+                    </div>
                 </div>
             </div>
         </main>
-        <!-- Contains footer for page, with basic stack info and Year of creation. -->
+
         <footer class="footer">
-            <p>&copy; 2024 TaskFlow. Built with HTML, CSS, and JavaScript.</p>
+            <p>&copy; 2024 TaskFlow. Complete task management with search and advanced filtering.</p>
         </footer>
     </div>
 
