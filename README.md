@@ -6,7 +6,7 @@
 **Try TaskFlow now:** [https://thomas-more-devops.github.io/taskflow-4-IADI3](https://thomas-more-devops.github.io/taskflow-4-IADI3)
 
 ## 📊 Project Status
-![TaskFlow](https://img.shields.io/badge/TaskFlow-v1.0.32-blue.svg)
+![TaskFlow](https://img.shields.io/badge/TaskFlow-v1.4.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/thomas-more-devops/taskflow-4-IADI3)
 ![GitHub issues](https://img.shields.io/github/issues/thomas-more-devops/taskflow-4-IADI3)
@@ -330,12 +330,12 @@ This TaskFlow application demonstrates:
 Potential improvements for version 2.0:
 - [x] **Task Categories**: Color-coded categories (Work, Personal, Shopping)
 - [ ] **Due Dates**: Calendar integration and deadline reminders
-- [ ] **Priority Levels**: High, Medium, Low priority sorting
-- [ ] **Search & Filter**: Advanced task filtering capabilities
-- [ ] **Dark Mode**: Toggle between light and dark themes
+- [x] **Priority Levels**: High, Medium, Low priority sorting
+- [x] **Search & Filter**: Advanced task filtering capabilities
+- [x] **Dark Mode**: Toggle between light and dark themes
 - [ ] **Collaboration**: Share tasks with team members
 - [ ] **Sync**: Cloud synchronization across devices
-- [ ] **Offline Mode**: Service worker for offline functionality
+- [x] **Offline Mode**: Service worker for offline functionality
 
 ## 🙏 Acknowledgments
 
@@ -361,12 +361,14 @@ Thanks to all the students and developers who contributed to this project:
 
 ## 🔄 Version History
 
-### v1.0.32 (Current)
+### v1.4.0 (Current)
 - ✨ Initial release with core functionality
 - 🎨 Modern, responsive design
 - 💾 Local storage persistence
 - 📊 Basic statistics tracking
 - 🔧 Complete CRUD operations
+- 🕶️ Dark theme added
+- 🏷️ Category & Priority Tags
 
 ---
 
