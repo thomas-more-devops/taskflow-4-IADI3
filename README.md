@@ -16,7 +16,7 @@
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=flat&logo=javascript&logoColor=%23F7DF1E)
 
 ## 🎓 Course Context
-This project is part of the **Bachelor International Business Management - Data Science, Protection & Security** course 
+This project is part of the **Bachelor International Business Management - Data Science, Protection & Security** course  
 **Week 1 - 4: GitHub and Collaboration**. It demonstrates:
 - Modern web development practices
 - Git workflow and collaboration
