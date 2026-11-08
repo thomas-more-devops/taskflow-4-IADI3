@@ -415,4 +415,9 @@ This project is perfect for learning Git version control:
 ## Accessibility
 Buttons use `aria-label` attributes so screen readers can describe them.
 
+
+
 Ready to start your DevOps journey with TaskFlow! 🚀
+
+## Version
+Current version: **v2.0.0**
