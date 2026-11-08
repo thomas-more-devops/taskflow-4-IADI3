@@ -73,6 +73,13 @@ class TaskFlow {
             }
         });
 
+        // Export button
+        const exportTasksBtn = document.getElementById('exportTasksBtn');
+        if (exportTasksBtn) {
+            exportTasksBtn.addEventListener('click', () => this.exportTasks());
+        }
+        
+
         // Focus on input when page loads
         taskInput.focus();
     }
