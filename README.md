@@ -410,5 +410,9 @@ This project is perfect for learning Git version control:
    - Select "Deploy from a branch"
    - Choose "main" branch
    - Your live app will be available at your GitHub Pages URL
+  
+     
+## Accessibility
+Buttons use `aria-label` attributes so screen readers can describe them.
 
 Ready to start your DevOps journey with TaskFlow! 🚀
